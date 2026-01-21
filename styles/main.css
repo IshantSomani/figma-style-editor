@@ -585,6 +585,15 @@ input[type="checkbox"] {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
+#intent-prop {
+  background: #fff7ed;
+  border: 1px dashed #fdba74;
+}
+
+#intent-prop h4 {
+  color: #9a3412;
+}
+
 .prop-group {
   background: #f8fafc;
   border-radius: 8px;

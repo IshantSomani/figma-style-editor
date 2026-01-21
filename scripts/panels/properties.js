@@ -9,6 +9,7 @@ const textPropGroup = document.getElementById("text-prop");
 const borderInput = document.getElementById("prop-border");
 const textColorInput = document.getElementById("prop-text-color");
 const removeBgBtn = document.getElementById("remove-bg");
+const intentInput = document.getElementById("prop-intent");
 
 export function initPropertiesPanel() {
   const panel = document.getElementById("properties-panel");
@@ -60,6 +61,20 @@ export function initPropertiesPanel() {
   borderInput.addEventListener("input", () =>
     updateStyle("borderRadius", Number(borderInput.value)),
   );
+
+  intentInput.addEventListener("input", () => {
+    const el = store.elements.find((el) =>
+      store.selectedElementIds.includes(el.id),
+    );
+
+    if (!el) return;
+
+    if (!el.meta) el.meta = {};
+
+    el.meta.note = intentInput.value;
+
+    render({ recordHistory: true });
+  });
 }
 
 export function syncPropertiesPanel() {
@@ -75,6 +90,8 @@ export function syncPropertiesPanel() {
     clearPanel();
     return;
   }
+
+  intentInput.value = el.meta?.note || "";
 
   widthInput.value = el.width;
   heightInput.value = el.height;
@@ -142,4 +159,5 @@ function clearPanel() {
   bgInput.value = "#000000";
   textColorInput.value = "#000000";
   textInput.value = "";
+  intentInput.value = "";
 }

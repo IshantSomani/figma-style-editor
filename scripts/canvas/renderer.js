@@ -71,6 +71,20 @@ export function render(options = {}) {
       });
     }
 
+    if (el.meta?.note) {
+      const badge = document.createElement("div");
+      badge.textContent = "🧠";
+      badge.title = el.meta.note;
+
+      badge.style.position = "absolute";
+      badge.style.top = "-10px";
+      badge.style.right = "-10px";
+      badge.style.fontSize = "14px";
+      badge.style.cursor = "help";
+
+      div.appendChild(badge);
+    }
+
     canvas.appendChild(div);
   });
 

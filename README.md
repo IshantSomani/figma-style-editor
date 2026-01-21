@@ -1,82 +1,102 @@
-# 🎨 Figma Style Editor (Vanilla JS)
+# 🎨 Figma-Style Design Editor (Web)
 
-A **Figma-inspired visual design editor** built using **pure HTML, CSS, and JavaScript** (no frameworks).
-This project demonstrates **real editor architecture** including selection, drag/resize/rotate, layers, properties panel, undo/redo, snap-to-grid, persistence, and export.
+A lightweight, browser-based **Figma-style design editor** built with **vanilla JavaScript, HTML, and CSS**.
+It focuses on **clarity, intent, and real-world usability**, not just drawing shapes.
 
-> ⚡ Built to showcase advanced frontend engineering concepts without React, Canvas, or external libraries.
+This project is ideal for:
+
+* Designers experimenting with layout ideas
+* Developers visualizing UI before implementation
+* Learning how professional design tools work internally
 
 ---
 
-## 🚀 Live Features
+## ✨ Features
 
-### 🧩 Core Editor
+### 🧱 Core Editor
 
-* Add **Rectangles** and **Text** elements
-* Visual **canvas-based editor**
-* Click to select, Shift+Click for **multi-select**
+* Add **Rectangles** and **Text**
 * Drag, resize, rotate elements
-* Keyboard support (arrow keys, delete)
-
-### 🗂 Layers Panel
-
-* View all elements as layers
-* Select via layers
-* Reorder layers (Move Up / Down)
-* Multi-select supported
-* Live layer count
+* Multi-select (Shift + Click)
+* Snap-to-grid movement
+* Keyboard controls (move, delete)
 
 ### 🎛 Properties Panel
 
-* Width & Height
+* Width & height control
 * Background color
-* **Border radius** (rectangles)
-* Text content (text elements)
-* Single-selection safe (industry standard UX)
+* **Remove background** (transparent)
+* Border radius
+* Text content (multi-line textarea)
+* Text color
+* Live updates with undo/redo support
 
-### ⌨ Keyboard Shortcuts
+### ✍️ Inline Text Editing
 
-* `Arrow Keys` → Move selected elements
-* `Delete` → Delete selected elements
-* `Ctrl + Z` → Undo
-* `Ctrl + Y / Ctrl + Shift + Z` → Redo
+* Double-click text on canvas to edit directly
+* Escape / blur to save
+* Editor shortcuts disabled while typing (safe UX)
 
-### 🕘 Undo / Redo System
+### 🧠 Design Intent Notes (Unique Feature)
 
-* Snapshot-based history
-* Works for:
+Attach **intent notes** to any element explaining *why* it exists.
 
-  * Drag
-  * Resize
-  * Rotate
-  * Properties change
-  * Layer reorder
-  * Delete
-* Memory-safe capped history
+Examples:
 
-### 💾 Persistence
+* “Brand color – don’t change”
+* “Temporary placeholder”
+* “Must align with hero section”
 
-* Auto-save using `localStorage`
-* Restores layout on refresh
-* Safe against corrupted data
+Notes:
+
+* Stored per element
+* Undo / redo safe
+* Visible via small 🧠 badge
+* Exported in JSON
+
+> This feature is rarely found in lightweight editors and is designed for real team collaboration.
+
+### 🗂 Layers Panel
+
+* Tree-style visual layout
+* Active layer highlighting
+* Text layers display actual text content
+* Layer reordering (move up / down)
+
+### ♻ History System
+
+* Undo / Redo (Ctrl+Z / Ctrl+Y)
+* Clean history snapshots (no corruption)
+* Records only meaningful actions
 
 ### 📤 Export
 
-* Export design as **JSON**
-* Export design as **standalone HTML**
-* No external dependencies in export
+* Export **HTML** (with inline styles)
+* Export **JSON** (full design data)
+* Preserves:
 
-### 📱 Responsive UI
-
-* Desktop / Laptop / Tablet / Mobile
-* Collapsible panels on mobile
-* Touch-friendly controls
+  * Position
+  * Size
+  * Rotation
+  * Border radius
+  * Text color
+  * Background transparency
 
 ---
 
-## 🏗 Project Architecture
+## 🧩 Tech Stack
 
-```
-figma-style-editor/
+* **HTML5**
+* **CSS3** (modern responsive layout)
+* **Vanilla JavaScript (ES Modules)**
+  No frameworks. No build tools. No dependencies.
+
+---
+
+## 📁 Project Structure
+
+```text
+.
 ├── index.html
 ├── styles/
 │   └── main.css
@@ -85,150 +105,131 @@ figma-style-editor/
 │   ├── canvas/
 │   │   ├── canvas.js
 │   │   ├── renderer.js
-│   │   └── selection.js
-│   ├── elements/
+│   │   ├── selection.js
 │   │   ├── drag.js
 │   │   ├── resize.js
-│   │   └── rotate.js
+│   │   └── rotation.js
 │   ├── panels/
-│   │   ├── layers.js
-│   │   └── properties.js
-│   ├── input/
-│   │   └── keyboard.js
+│   │   ├── properties.js
+│   │   └── layers.js
 │   ├── state/
 │   │   ├── store.js
 │   │   ├── history.js
 │   │   └── constants.js
-│   ├── utils/
-│   │   ├── id.js
-│   │   └── snap.js
-│   ├── persistence/
-│   │   ├── save.js
-│   │   └── load.js
 │   ├── export/
-│   │   ├── exportJSON.js
-│   │   └── exportHTML.js
-│   └── ui/
-│       └── status.js
+│   │   ├── exportHTML.js
+│   │   └── exportJSON.js
+│   └── utils/
+│       └── snap.js
+└── README.md
 ```
 
 ---
 
-## 🧠 Architecture Principles
+## 🚀 Getting Started
 
-* **Single Source of Truth**
-
-  * All element data lives in `store.elements`
-* **State-Driven Rendering**
-
-  * UI is rebuilt from state
-* **No DOM mutation hacks**
-* **Undo/Redo via state snapshots**
-* **Derived UI (no duplicated state)**
-* **Editor-grade event handling**
-
-This mirrors how tools like **Figma, Notion, Photoshop** are architected internally.
-
----
-
-## 📦 Element Data Model
-
-```js
-{
-  id: "el_xxx",
-  type: "rect" | "text",
-  x: Number,
-  y: Number,
-  width: Number,
-  height: Number,
-  rotation: Number,
-  text?: String,
-  styles: {
-    background: String,
-    color: String,
-    borderRadius: Number
-  }
-}
-```
-
----
-
-## 🛠 How to Run Locally
-
-> ⚠️ Use a local server (ES modules require it)
-
-### Option 1: VS Code Live Server
-
-1. Open folder in VS Code
-2. Install **Live Server** extension
-3. Right-click `index.html` → *Open with Live Server*
-
-### Option 2: Simple HTTP Server
+### 1️⃣ Clone or Download
 
 ```bash
-npx serve .
+git clone https://github.com/your-username/figma-style-editor.git
 ```
 
----
-
-## 📌 Supported Browsers
-
-* Chrome (recommended)
-* Edge
-* Firefox
-* Safari (latest)
-
-Uses:
-
-* ES Modules
-* `crypto.randomUUID()`
+or download as ZIP.
 
 ---
 
-## 🎯 What This Project Demonstrates
+### 2️⃣ Run Locally (IMPORTANT)
 
-* Advanced DOM-based editor logic
-* Real-world state management (without frameworks)
-* Undo/redo engineering
-* Multi-selection math
-* Snap-to-grid correctness
-* Export pipelines
-* Responsive UI design
+Because this project uses **ES modules**, you must run it via a local server.
 
----
+#### Option A: VS Code Live Server (recommended)
 
-## 🧪 Known Limitations (Intentional)
+* Install **Live Server** extension
+* Right-click `index.html`
+* Click **Open with Live Server**
 
-* No grouping yet (planned)
-* No text alignment/font family yet
-* No smart guides (snap to other elements)
-* No zoom / pan
+#### Option B: Simple HTTP server
 
-These are **deliberately left** as extensibility exercises.
+```bash
+# Node
+npx serve
 
----
+# or Python
+python -m http.server
+```
 
-## 🔮 Planned Enhancements
+Then open:
 
-* Group / Ungroup
-* Smart Guides (edge snapping)
-* Font size & font family
-* Text alignment
-* Auto-resize text boxes
-* Import JSON
-* Zoom & pan
-* Mini-map
+```
+http://localhost:3000
+```
+
+❌ **Do NOT open via file://**
+CORS will break module imports.
 
 ---
 
-## 🏆 Portfolio Statement (Use This)
+## ⌨️ Keyboard Shortcuts
 
-> *Built a Figma-style visual editor using vanilla JavaScript. Implemented selection, drag/resize/rotate, layers, undo/redo, snap-to-grid, persistence, and export without using Canvas or frontend frameworks.*
+| Action           | Shortcut                    |
+| ---------------- | --------------------------- |
+| Undo             | Ctrl + Z                    |
+| Redo             | Ctrl + Y / Ctrl + Shift + Z |
+| Delete element   | Delete                      |
+| Move selected    | Arrow Keys                  |
+| Multi-select     | Shift + Click               |
+| Inline text edit | Double-click text           |
+
+---
+
+## ♿ Accessibility
+
+* Screen-reader friendly toolbar
+* Icon-only UI with hidden accessible labels
+* No keyboard hijacking while typing
+* Clean focus behavior
+
+---
+
+## 📦 Export Details
+
+### HTML Export
+
+* Fully standalone HTML file
+* Inline styles
+* Preserves visual fidelity
+
+### JSON Export
+
+* Complete design state
+* Includes design intent notes
+* Can be reloaded later
+
+---
+
+## 💡 Unique Philosophy
+
+Unlike many editors, this tool focuses on:
+
+* **Why design decisions are made**
+* Not just how things look
+* Making design understandable for developers
+
+That’s why **Design Intent Notes** exist.
+
+---
+
+## 🔮 Future Enhancements (Planned)
+
+* Grouping & nested layers
+* Accessibility heatmap
+* Time-travel playback
+* Constraint-based resizing
+* Auto-layout
+* Developer handoff tokens (CSS variables)
 
 ---
 
 ## 📄 License
 
-MIT License — free to use, modify, and learn from.
-
----
+MIT License — free to use, modify, and distribute.

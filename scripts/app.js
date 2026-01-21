@@ -52,6 +52,9 @@ function createElement(type) {
       color: "#100000",
       borderRadius: 0,
     },
+    meta: {
+      note: "",
+    },
   };
 
   store.elements.push(element);
