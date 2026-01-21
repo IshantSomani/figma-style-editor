@@ -12,12 +12,6 @@ import { loadLayout } from "./persistence/load.js";
 import { exportJSON } from "./export/exportJSON.js";
 import { exportHTML } from "./export/exportHTML.js";
 import { undo, redo } from "./state/history.js";
-import { setSnap } from "./utils/snap.js";
-
-document.getElementById("snap-toggle").addEventListener("change", (e) => {
-  console.log("Snap to Grid:", e.target.checked);
-  setSnap(e.target.checked);
-});
 
 document.getElementById("undo-btn").onclick = () => {
   undo();
