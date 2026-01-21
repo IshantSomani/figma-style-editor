@@ -46,13 +46,14 @@ function toggleSelection(id) {
 function syncRotationUI() {
   const rotateInput = document.getElementById("rotate-input");
 
-  if (store.selectedElementIds.length === 0) {
+  if (store.selectedElementIds.length !== 1) {
     rotateInput.value = 0;
+    rotateInput.disabled = true;
     return;
   }
 
-  const primaryId = store.selectedElementIds.at(-1);
-  const el = store.elements.find((e) => e.id === primaryId);
+  const el = store.elements.find((el) => el.id === store.selectedElementIds[0]);
 
-  rotateInput.value = el ? el.rotation : 0;
+  rotateInput.disabled = false;
+  rotateInput.value = el?.rotation ?? 0;
 }

@@ -86,5 +86,5 @@ function moveAll(dx, dy) {
 
 function isTyping(e) {
   const tag = e.target.tagName;
-  return tag === "INPUT" || tag === "TEXTAREA";
+  return tag === "INPUT" || tag === "TEXTAREA" || e.target.isContentEditable;
 }

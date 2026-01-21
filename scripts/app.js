@@ -48,7 +48,7 @@ function createElement(type) {
     rotation: 0,
     text: type === "text" ? "Text" : undefined, // 🔑 FIX
     styles: {
-      background: type === "text" ? "transparent" : "#4caf50",
+      background: type === "text" ? "transparent" : "#4c54af",
       color: "#100000",
       borderRadius: 0,
     },

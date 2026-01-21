@@ -1,33 +1,45 @@
 import { store } from "./store.js";
 
-const undoStack = [];
-const redoStack = [];
-const MAX_HISTORY = 50; // prevent memory abuse
+const MAX_HISTORY = 50;
 
-export function pushHistory() {
-  undoStack.push(clone(store.elements));
+let undoStack = [];
+let redoStack = [];
+
+function snapshot() {
+  return {
+    elements: JSON.parse(JSON.stringify(store.elements)),
+    selectedElementIds: [...store.selectedElementIds],
+  };
+}
+
+export function recordHistory() {
+  undoStack.push(snapshot());
 
   if (undoStack.length > MAX_HISTORY) {
     undoStack.shift();
   }
 
-  redoStack.length = 0; // clear redo on new action
+  redoStack.length = 0;
 }
 
 export function undo() {
   if (undoStack.length === 0) return;
 
-  redoStack.push(clone(store.elements));
-  store.elements = undoStack.pop();
+  redoStack.push(snapshot());
+
+  const prev = undoStack.pop();
+
+  store.elements = JSON.parse(JSON.stringify(prev.elements));
+  store.selectedElementIds = [...prev.selectedElementIds];
 }
 
 export function redo() {
   if (redoStack.length === 0) return;
 
-  undoStack.push(clone(store.elements));
-  store.elements = redoStack.pop();
-}
+  undoStack.push(snapshot());
 
-function clone(data) {
-  return JSON.parse(JSON.stringify(data));
+  const next = redoStack.pop();
+
+  store.elements = JSON.parse(JSON.stringify(next.elements));
+  store.selectedElementIds = [...next.selectedElementIds];
 }

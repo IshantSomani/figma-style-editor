@@ -4,10 +4,11 @@ import { render } from "../canvas/renderer.js";
 import { snapPosition, snapSize } from "../utils/snap.js";
 
 let isResizing = false;
-let handleType = null;
+let resizeHandle = null;
 let startMouseX = 0;
 let startMouseY = 0;
 let startRect = null;
+let elementId = null;
 
 const MIN_SIZE = 30;
 
@@ -16,32 +17,37 @@ export function initResize() {
     const handle = e.target;
 
     if (!handle.classList.contains("resize-handle")) return;
+    
+    e.stopPropagation();
+    e.preventDefault();
 
-    const id = handle.dataset.id;
-    if (store.selectedElementId !== id) return;
+    elementId = handle.dataset.id;
+    resizeHandle = handle.dataset.handle;
 
-    const element = store.elements.find((el) => el.id === id);
+    const element = store.elements.find(el => el.id === elementId);
     if (!element) return;
 
     isResizing = true;
-    handleType = handle.dataset.handle;
 
     startMouseX = e.clientX;
     startMouseY = e.clientY;
 
-    startRect = { ...element };
+    startRect = {
+      x: element.x,
+      y: element.y,
+      width: element.width,
+      height: element.height,
+    };
 
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
-
-    e.stopPropagation(); // ⛔ prevent drag
   });
 }
 
 function onMouseMove(e) {
   if (!isResizing) return;
 
-  const el = store.elements.find((el) => el.id === store.selectedElementId);
+  const el = store.elements.find(el => el.id === elementId);
   if (!el) return;
 
   const dx = e.clientX - startMouseX;
@@ -49,55 +55,56 @@ function onMouseMove(e) {
 
   let { x, y, width, height } = startRect;
 
-  switch (handleType) {
-    case "se":
-      width += dx;
-      height += dy;
-      break;
-
-    case "sw":
-      width -= dx;
-      height += dy;
-      x += dx;
-      break;
-
-    case "ne":
-      width += dx;
-      height -= dy;
-      y += dy;
-      break;
-
-    case "nw":
-      width -= dx;
-      height -= dy;
-      x += dx;
-      y += dy;
-      break;
+  if (resizeHandle.includes("e")) {
+    width = startRect.width + dx;
   }
 
-  // 🔒 Minimum size
+  if (resizeHandle.includes("s")) {
+    height = startRect.height + dy;
+  }
+
+  if (resizeHandle.includes("w")) {
+    width = startRect.width - dx;
+    x = startRect.x + dx;
+  }
+
+  if (resizeHandle.includes("n")) {
+    height = startRect.height - dy;
+    y = startRect.y + dy;
+  }
+
+
+  width = snapSize(width);
+  height = snapSize(height);
+  x = snapPosition(x);
+  y = snapPosition(y);
+
   width = Math.max(MIN_SIZE, width);
   height = Math.max(MIN_SIZE, height);
 
-  // 🔒 Canvas boundaries
   const canvasRect = canvas.getBoundingClientRect();
 
   x = Math.max(0, Math.min(x, canvasRect.width - width));
   y = Math.max(0, Math.min(y, canvasRect.height - height));
 
-  el.x = snapPosition(x);
-  el.y = snapPosition(y);
-  el.width = snapSize(width);
-  el.height = snapSize(height);
+  el.x = x;
+  el.y = y;
+  el.width = width;
+  el.height = height;
 
-  render({ recordHistory: true });
+  render();
 }
 
 function onMouseUp() {
+  if (!isResizing) return;
+
   isResizing = false;
-  handleType = null;
+  resizeHandle = null;
   startRect = null;
+  elementId = null;
 
   document.removeEventListener("mousemove", onMouseMove);
   document.removeEventListener("mouseup", onMouseUp);
+
+  render({ recordHistory: true });
 }

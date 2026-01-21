@@ -6,8 +6,10 @@ const heightInput = document.getElementById("prop-height");
 const bgInput = document.getElementById("prop-bg");
 const textInput = document.getElementById("prop-text");
 const textPropGroup = document.getElementById("text-prop");
- const borderInput = document.getElementById("prop-border");
- 
+const borderInput = document.getElementById("prop-border");
+const textColorInput = document.getElementById("prop-text-color");
+const removeBgBtn = document.getElementById("remove-bg");
+
 export function initPropertiesPanel() {
   const panel = document.getElementById("properties-panel");
 
@@ -25,7 +27,35 @@ export function initPropertiesPanel() {
 
   bgInput.addEventListener("input", updateBg);
 
+  removeBgBtn.addEventListener("click", () => {
+    const el = store.elements.find((el) =>
+      store.selectedElementIds.includes(el.id),
+    );
+
+    if (!el) return;
+
+    // 🔑 Remove background safely
+    el.styles.background = "transparent";
+
+    render({ recordHistory: true });
+  });
+
   textInput.addEventListener("input", () => update("text", textInput.value));
+  textColorInput.addEventListener("input", () => {
+    const el = store.elements.find((el) =>
+      store.selectedElementIds.includes(el.id),
+    );
+
+    if (!el || el.type !== "text") return;
+
+    // 🎨 Apply text color
+    el.styles.color = textColorInput.value;
+
+    // 🔑 FORCE transparent background for text
+    el.styles.background = "transparent";
+
+    render({ recordHistory: true });
+  });
 
   borderInput.addEventListener("input", () =>
     updateStyle("borderRadius", Number(borderInput.value)),
@@ -48,7 +78,10 @@ export function syncPropertiesPanel() {
 
   widthInput.value = el.width;
   heightInput.value = el.height;
-  bgInput.value = el.styles.background || "#000000";
+  bgInput.value =
+    el.styles?.background && el.styles.background !== "transparent"
+      ? el.styles.background
+      : "#ffffff";
   borderInput.value = el.styles?.borderRadius ?? 0;
 
   if (el.type === "rect") {
@@ -59,7 +92,9 @@ export function syncPropertiesPanel() {
 
   if (el.type === "text") {
     textPropGroup.style.display = "block";
+
     textInput.value = el.text ?? "";
+    textColorInput.value = el.styles?.color || "#000000";
   }
 }
 
@@ -68,8 +103,6 @@ function update(prop, value) {
 
   const el = store.elements.find((el) => el.id === store.selectedElementIds[0]);
   if (!el) return;
-
-  console.log("Updating", prop, "to", value);
 
   if (prop === "text") {
     el.text = value;
@@ -107,5 +140,6 @@ function clearPanel() {
   widthInput.value = "";
   heightInput.value = "";
   bgInput.value = "#000000";
+  textColorInput.value = "#000000";
   textInput.value = "";
 }

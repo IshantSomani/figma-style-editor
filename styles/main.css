@@ -76,23 +76,131 @@ body {
 
 /* Toolbar */
 #toolbar {
-  height: var(--toolbar-height);
-  background: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+
+  height: auto;
+  padding: 10px 14px;
+  background: #ffffff20;
+  border-radius: 16px;
+
   display: flex;
   align-items: center;
-  padding: 0 var(--gap);
-  gap: 12px;
-  position: relative;
-  z-index: 100;
-  flex-wrap: wrap;
+  gap: 6px;
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.15),
+    0 4px 10px rgba(0, 0, 0, 0.08);
+
+  backdrop-filter: blur(8px);
+}
+
+/* Remove wrapping for floating toolbar */
+#toolbar {
+  flex-wrap: nowrap;
+}
+
+/* Toolbar groups become icon clusters */
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px;
+  border-right: 1px solid #e2e8f0c5;
+}
+
+.toolbar-group:last-child {
+  border-right: none;
+}
+
+/* =========================
+   TOOLBAR BUTTONS (ICON-ONLY)
+========================= */
+#toolbar button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: var(--btn-color-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  box-shadow: none;
+}
+
+#toolbar button.secondary {
+  background: var(--btn-color-secondary);
+  color: #475569;
+  border: 2px solid var(--btn-color-secondary-hover);
+}
+
+#toolbar button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+#toolbar button:active {
+  transform: translateY(0);
+}
+
+/* Icons only visible */
+#toolbar button i {
+  font-size: 18px;
+}
+
+/* Hide visible text but keep screen-reader access */
+#toolbar .text {
+  display: none;
+}
+
+/* =========================
+   TOOLBAR LABELS (SLIDER / CHECKBOX)
+========================= */
+#toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#toolbar input[type="range"] {
+  width: 80px;
+}
+
+#toolbar input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
 }
 
 @media (max-width: 767px) {
   #toolbar {
-    height: auto;
-    min-height: var(--toolbar-height);
-    padding: 8px var(--gap);
+    bottom: 16px;
+    padding: 8px 10px;
+    border-radius: 14px;
+  }
+
+  #toolbar button {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  #toolbar button i {
+    font-size: 16px;
+  }
+
+  #toolbar input[type="range"] {
+    width: 60px;
   }
 }
 
@@ -182,7 +290,7 @@ input[type="checkbox"] {
 /* Main Editor Layout */
 #editor {
   display: flex;
-  height: calc(100vh - var(--toolbar-height));
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -190,7 +298,7 @@ input[type="checkbox"] {
   #editor {
     flex-direction: column;
     height: auto;
-    min-height: calc(100vh - var(--toolbar-height));
+    min-height: 100dvh;
   }
 }
 
@@ -235,30 +343,77 @@ input[type="checkbox"] {
   padding: var(--gap);
 }
 
+/* =========================
+   LAYERS LIST (TREE STYLE)
+========================= */
 #layers-list {
   list-style: none;
-  padding: 0;
+  padding: 8px 0;
   margin: 0;
+  position: relative;
 }
 
+/* Vertical guide line */
+#layers-list::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 18px;
+  width: 2px;
+  height: 100%;
+  background: #e2e8f0;
+}
+
+/* Tree node */
 #layers-list li {
-  padding: 14px 12px;
+  position: relative;
+  padding: 12px 12px 12px 36px;
   background: #ffffff;
   border-radius: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+
   border: 1px solid var(--btn-color-secondary-hover);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
+/* Horizontal connector */
+#layers-list li::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  width: 12px;
+  height: 2px;
+  background: #e2e8f0;
+  transform: translateY(-50%);
+}
+
+/* Tree dot */
+#layers-list li::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border: 2px solid #94a3b8;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+/* Hover */
 #layers-list li:hover {
   background: #f8fafc;
   border-color: #cbd5e1;
 }
 
+/* Active (selected) */
 #layers-list li.active {
   background: #e0e7ff;
   border-color: var(--btn-color-primary);
@@ -266,15 +421,26 @@ input[type="checkbox"] {
   font-weight: 500;
 }
 
+/* Active node dot */
+#layers-list li.active::after {
+  border-color: var(--btn-color-primary);
+  background: #ffffff;
+}
+
+/* Icon */
 #layers-list li i {
-  font-size: 16px;
+  font-size: 15px;
   color: #64748b;
 }
 
+/* Active icon */
 #layers-list li.active i {
   color: var(--btn-color-primary);
 }
 
+/* =========================
+   LAYER ACTIONS (UNCHANGED)
+========================= */
 .layer-actions {
   display: flex;
   gap: 8px;
@@ -308,8 +474,16 @@ input[type="checkbox"] {
   min-height: 300px;
 
   background-image:
-    linear-gradient(to right, var(--btn-color-secondary-hover) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--btn-color-secondary-hover) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      var(--btn-color-secondary-hover) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      var(--btn-color-secondary-hover) 1px,
+      transparent 1px
+    );
   background-size: 20px 20px;
 }
 
@@ -352,6 +526,13 @@ input[type="checkbox"] {
   }
 }
 
+.prop-wrapper {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  gap: 12px;
+}
+
 .prop {
   margin-bottom: 20px;
 }
@@ -367,6 +548,7 @@ input[type="checkbox"] {
 .prop input,
 .prop select {
   width: 100%;
+  height: auto;
   padding: 12px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
@@ -549,4 +731,16 @@ input[type="checkbox"] {
 
 .rounded {
   border-radius: 8px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }

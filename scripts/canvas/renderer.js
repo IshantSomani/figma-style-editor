@@ -2,12 +2,14 @@ import { store } from "../state/store.js";
 import { canvas } from "./canvas.js";
 import { renderLayers } from "../panels/layers.js";
 import { saveLayout } from "../persistence/save.js";
-import { pushHistory } from "../state/history.js";
-import { updateLayerCount } from "../ui/status.js";
+import { recordHistory } from "../state/history.js";
+import { updateSelectedInfo, updateLayerCount } from "../ui/status.js";
 
-export function render({ recordHistory = false } = {}) {
-  if (recordHistory) {
-    pushHistory();
+export function render(options = {}) {
+  const { recordHistory: shouldRecord = false } = options;
+
+  if (shouldRecord) {
+    recordHistory();
   }
 
   canvas.innerHTML = "";
@@ -24,7 +26,7 @@ export function render({ recordHistory = false } = {}) {
     div.style.height = el.height + "px";
     div.style.transform = `rotate(${el.rotation}deg)`;
     div.style.transformOrigin = "center center";
-    div.style.background = el.styles.background;
+    div.style.background = el.styles?.background || "transparent";
     div.style.color = el.styles.color;
     div.style.display = "flex";
     div.style.alignItems = "center";
@@ -32,11 +34,13 @@ export function render({ recordHistory = false } = {}) {
     div.style.cursor = "pointer";
     div.style.zIndex = index;
     div.style.borderRadius = (el.styles?.borderRadius ?? 0) + "px";
+    div.style.color = el.styles?.color || "#000";
 
     if (el.type === "text") {
       div.textContent = el.text || "";
 
       div.addEventListener("dblclick", () => {
+        e.stopPropagation();
         div.contentEditable = true;
         div.focus();
 
@@ -70,6 +74,7 @@ export function render({ recordHistory = false } = {}) {
     canvas.appendChild(div);
   });
 
+  updateSelectedInfo();
   updateLayerCount();
   renderLayers();
   saveLayout();

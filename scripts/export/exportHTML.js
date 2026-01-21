@@ -10,23 +10,29 @@ export function exportHTML() {
 
 function buildHTML() {
   const elementsHTML = store.elements
-    .map(el => {
+    .map((el) => {
+      const styles = el.styles || {};
+
       const style = `
         position:absolute;
         left:${el.x}px;
         top:${el.y}px;
         width:${el.width}px;
         height:${el.height}px;
-        background:${el.styles.background};
-        color:${el.styles.color};
-        transform:rotate(${el.rotation}deg);
+        background:${styles.background || "transparent"};
+        color:${styles.color || "#000"};
+        border-radius:${styles.borderRadius ?? 0}px;
+        transform:rotate(${el.rotation || 0}deg);
         transform-origin:center center;
         display:flex;
         align-items:center;
         justify-content:center;
-      `.replace(/\s+/g, " ");
+        box-sizing:border-box;
+      `
+        .replace(/\s+/g, " ")
+        .trim();
 
-      const content = el.type === "text" ? el.text || "Text" : "";
+      const content = el.type === "text" ? el.text || "" : "";
 
       return `<div style="${style}">${content}</div>`;
     })
@@ -39,7 +45,7 @@ function buildHTML() {
   <meta charset="UTF-8" />
   <title>Exported Design</title>
 </head>
-<body style="margin:0; position:relative;">
+<body style="margin:0; position:relative; min-height:100vh;">
   ${elementsHTML}
 </body>
 </html>

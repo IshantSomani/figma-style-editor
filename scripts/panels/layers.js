@@ -32,7 +32,16 @@ export function renderLayers() {
 
   store.elements.forEach((el, index) => {
     const li = document.createElement("li");
-    li.textContent = `${el.type.toUpperCase()} (${index})`;
+    const textValue = el.text?.trim() || "Text";
+
+    const MAX_LEN = 24;
+    li.textContent =
+      el.type === "text"
+        ? textValue.length > MAX_LEN
+          ? textValue.slice(0, MAX_LEN).trim() + "…"
+          : textValue
+        : `${el.type.toUpperCase()} ${index + 1}`;
+
     li.dataset.id = el.id;
 
     if (store.selectedElementIds.includes(el.id)) {
@@ -58,13 +67,14 @@ function moveLayers(direction) {
 
   // Work on indices, not IDs
   const indices = store.selectedElementIds
-    .map(id => store.elements.findIndex(el => el.id === id))
+    .map((id) => store.elements.findIndex((el) => el.id === id))
     .sort((a, b) => a - b);
 
   // Prevent moving out of bounds
   if (
     (direction === -1 && indices[0] === 0) ||
-    (direction === 1 && indices[indices.length - 1] === store.elements.length - 1)
+    (direction === 1 &&
+      indices[indices.length - 1] === store.elements.length - 1)
   ) {
     return;
   }
@@ -72,7 +82,7 @@ function moveLayers(direction) {
   // Move order depends on direction
   const ordered = direction === -1 ? indices : [...indices].reverse();
 
-  ordered.forEach(index => {
+  ordered.forEach((index) => {
     const temp = store.elements[index];
     store.elements[index] = store.elements[index + direction];
     store.elements[index + direction] = temp;
