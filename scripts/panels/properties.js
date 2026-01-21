@@ -6,10 +6,10 @@ const heightInput = document.getElementById("prop-height");
 const bgInput = document.getElementById("prop-bg");
 const textInput = document.getElementById("prop-text");
 const textPropGroup = document.getElementById("text-prop");
-
+ const borderInput = document.getElementById("prop-border");
+ 
 export function initPropertiesPanel() {
   const panel = document.getElementById("properties-panel");
-  const borderInput = document.getElementById("prop-border");
 
   panel.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -60,9 +60,6 @@ export function syncPropertiesPanel() {
   if (el.type === "text") {
     textPropGroup.style.display = "block";
     textInput.value = el.text ?? "";
-  } else {
-    textPropGroup.style.display = "none";
-    textInput.value = "";
   }
 }
 
@@ -71,6 +68,8 @@ function update(prop, value) {
 
   const el = store.elements.find((el) => el.id === store.selectedElementIds[0]);
   if (!el) return;
+
+  console.log("Updating", prop, "to", value);
 
   if (prop === "text") {
     el.text = value;
@@ -109,5 +108,4 @@ function clearPanel() {
   heightInput.value = "";
   bgInput.value = "#000000";
   textInput.value = "";
-  textPropGroup.style.display = "none";
 }
