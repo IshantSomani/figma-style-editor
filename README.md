@@ -131,7 +131,7 @@ Notes:
 ### 1️⃣ Clone or Download
 
 ```bash
-git clone https://github.com/your-username/figma-style-editor.git
+git clone https://github.com/IshantSomani/figma-style-editor.git
 ```
 
 or download as ZIP.
