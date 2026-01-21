@@ -574,6 +574,9 @@ input[type="checkbox"] {
   resize: vertical;
   min-height: 150px;
   font-family: inherit;
+  transition: all 0.2s;
+  background: #ffffff;
+  color: #1e293b;
 }
 
 .prop textarea:focus {
