@@ -565,6 +565,23 @@ input[type="checkbox"] {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
+.prop textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 150px;
+  font-family: inherit;
+}
+
+.prop textarea:focus {
+  outline: none;
+  border-color: var(--btn-color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
 .prop-group {
   background: #f8fafc;
   border-radius: 8px;
